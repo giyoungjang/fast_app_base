@@ -8,7 +8,8 @@ import '../../../dialog/d_color_bottom.dart';
 import '../../../dialog/d_confirm.dart';
 
 class HomeFragment extends StatelessWidget {
-  const HomeFragment({
+  const
+  HomeFragment({
     Key? key,
   }) : super(key: key);
 
