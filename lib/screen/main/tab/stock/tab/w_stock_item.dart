@@ -20,7 +20,7 @@ class StockItem extends StatelessWidget {
             width: 50,
           ),
           width20,
-          (stock.stockName).text.size(10).bold.make(),
+          (stock.name).text.size(10).bold.make(),
           emptyExpanded,
           Column(
             children: [
