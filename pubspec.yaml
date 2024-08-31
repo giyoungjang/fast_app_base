@@ -78,7 +78,7 @@ dependencies:
   flutter_animate: ^4.2.0
   live_background: ^0.1.3
   animations: ^2.0.7
-  rive: ^0.7.16
+  rive: ^0.11.1
 
 
 
@@ -114,6 +114,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/json/
+    - assets/rive/
     - assets/image/
     - assets/image/icon/
     - assets/image/flag/
