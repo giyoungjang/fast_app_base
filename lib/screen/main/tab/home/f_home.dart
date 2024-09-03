@@ -1,3 +1,4 @@
+import 'package:fast_app_base/class/ch04_advanced_dart1/stream_test.dart';
 import 'package:fast_app_base/common/cli_common.dart';
 import 'package:fast_app_base/common/common.dart';
 import 'package:fast_app_base/common/widget/round_button_theme.dart';
@@ -29,6 +30,14 @@ class HomeFragment extends StatefulWidget {
 }
 
 class _HomeFragmentState extends State<HomeFragment> {
+  int count = 0;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  late final stream = countStream(5).asBroadcastStream();
   bool isLike = false;
 
   @override
@@ -48,35 +57,82 @@ class _HomeFragmentState extends State<HomeFragment> {
               await sleepAsync(500.ms);
             },
             child: SingleChildScrollView(
-              padding: const EdgeInsets.only(top: TtossAppBar.appBarHeight, bottom: MainScreenState.bottomNavigatorHeight),
-              child: Column(
-                children: [
-                  SizedBox(height: 250, width: 250, child: RiveLikeButton(isLike, onTapLike: (isLike){
-                    setState(() {
-                      this.isLike = isLike;
-                    });
-                  }),),
-                  BigButton(
-                    '토스뱅크',
-                    onTap: () async{
-                      print('start');
-                      final result = await Nav.push(NumberScreen());
-                      print(result);
-                      print('end');
-                    },
-                  ),
-                  height10,
-                  RoundedContainer(child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                    '자산'.text.bold.white.make(),
-                      height5,
-                    ...bankAccounts.map((e) => BankAccountWidget(e)).toList(),
+                padding: const EdgeInsets.only(
+                    top: TtossAppBar.appBarHeight,
+                    bottom: MainScreenState.bottomNavigatorHeight),
+                child: Column(
+                  children: [
+                    // SizedBox(height: 250, width: 250, child: RiveLikeButton(isLike, onTapLike: (isLike){
+                    //   setState(() {
+                    //     this.isLike = isLike;
+                    //   });
+                    // }),),
+                    StreamBuilder(
+                      builder: (context, snapshot) {
+                        final count = snapshot.data;
 
-                  ],)),
-                ],
-              ) //.pSymmetric(h: 20).animate().slideY(duration: 3000.ms).fadeIn(),
-            ),
+                        switch (snapshot.connectionState) {
+                          case ConnectionState.active:
+                            if (count == null) {
+                              return const CircularProgressIndicator();
+                            } else {
+                              return count.text.size(30).bold.make();
+                            }
+
+                          case ConnectionState.waiting:
+                          case ConnectionState.none:
+                            return const CircularProgressIndicator();
+                          case ConnectionState.done:
+                            return '완료'.text.size(30).white.bold.make();
+                        }
+                      },
+                      stream: stream,
+                    ),
+                    StreamBuilder(
+                      builder: (context, snapshot) {
+                        final count = snapshot.data;
+
+                        switch (snapshot.connectionState) {
+                          case ConnectionState.active:
+                            if (count == null) {
+                              return const CircularProgressIndicator();
+                            } else {
+                              return count.text.size(30).bold.make();
+                            }
+
+                          case ConnectionState.waiting:
+                          case ConnectionState.none:
+                            return const CircularProgressIndicator();
+                          case ConnectionState.done:
+                            return '완료'.text.size(30).white.bold.make();
+                        }
+                      },
+                      stream: stream,
+                    ),
+                    BigButton(
+                      '토스뱅크',
+                      onTap: () async {
+                        print('start');
+                        final result = await Nav.push(NumberScreen());
+                        print(result);
+                        print('end');
+                      },
+                    ),
+                    height10,
+                    RoundedContainer(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        '자산'.text.bold.white.make(),
+                        height5,
+                        ...bankAccounts
+                            .map((e) => BankAccountWidget(e))
+                            .toList(),
+                      ],
+                    )),
+                  ],
+                ) //.pSymmetric(h: 20).animate().slideY(duration: 3000.ms).fadeIn(),
+                ),
           ),
           const TtossAppBar()
         ],
